@@ -1,5 +1,8 @@
-FROM openjdk:21
-RUN mkdir "app"
+FROM openjdk
+
 WORKDIR /app
-COPY target/*.jar /app/app.jar
-CMD ["java","-jar","/app/app.jar"]
+
+COPY target/*.jar /app/market-spring.jar
+
+ENTRYPOINT ["java","-jar","market-spring.jar"]
+
