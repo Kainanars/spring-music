@@ -2,7 +2,7 @@ FROM openjdk
 
 WORKDIR /app
 
-COPY target/*.jar /app/market-spring.jar
+COPY target/*.jar /app/MusicPlayer.jar
 
-ENTRYPOINT ["java","-jar","market-spring.jar"]
+ENTRYPOINT ["java","-jar","MusicPlayer.jar"]
 

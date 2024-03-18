@@ -1,4 +1,4 @@
-package com.sd3.market;
+package com.sd3.lab3;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
