@@ -1,10 +1,9 @@
-package com.sd3.market.entities;
+package com.sd3.lab3.entities;
 
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.UUID;
 
 @MappedSuperclass
 public abstract class AbstractEntity implements Serializable {
@@ -13,25 +12,22 @@ public abstract class AbstractEntity implements Serializable {
         Date now = new Date();
         CreatedAt = now;
         UpdatedAt = now;
-        Active = true;
     }
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID")
-    private UUID Id;
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "IX_ID")
+    private long Id;
     @Column(name = "DT_CREATED_AT")
     private final Date CreatedAt;
     @Column(name = "DT_UPDATED_AT")
     private Date UpdatedAt;
-    @Column(name = "ST_ACTIVE")
-    private Boolean Active;
 
 
-    public UUID getId() {
+    public long getId() {
         return Id;
     }
 
-    public void setId(UUID id) {
+    public void setId(long id) {
         Id = id;
     }
 
@@ -47,11 +43,4 @@ public abstract class AbstractEntity implements Serializable {
         UpdatedAt = updatedAt;
     }
 
-    public Boolean getActive() {
-        return Active;
-    }
-
-    public void setActive(Boolean active) {
-        Active = active;
-    }
 }
