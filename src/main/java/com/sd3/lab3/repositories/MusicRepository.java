@@ -11,9 +11,9 @@ import java.util.List;
 public interface MusicRepository extends JpaRepository<Music, Long> {
 
     @Query("SELECT m FROM Music m WHERE " +
-            "(:title IS NULL OR LOWER(m.Title) LIKE %:title%) AND " +
-            "(:singer IS NULL OR LOWER(m.Singer) LIKE %:singer%) AND " +
-            "(:genre IS NULL OR LOWER(m.Genre) LIKE %:genre%)")
+            "(:title IS NULL OR LOWER(m.title) LIKE %:title%) AND " +
+            "(:singer IS NULL OR LOWER(m.singer) LIKE %:singer%) AND " +
+            "(:genre IS NULL OR LOWER(m.genre) LIKE %:genre%)")
     List<Music> findMusics(@Param("title") String title, @Param("singer") String singer, @Param("genre") String genre);
 
 

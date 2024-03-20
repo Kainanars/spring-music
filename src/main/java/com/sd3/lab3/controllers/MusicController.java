@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import jakarta.persistence.PersistenceException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/musics")
@@ -164,11 +165,11 @@ public class MusicController {
                             schema = @Schema(implementation = MusicDto.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "Title": "Sweet Child o' Mine",
-                                      "Singer": "Guns N' Roses",
-                                      "Genre": "Rock",
-                                      "Duration": 5.56,
-                                      "Link": "https://www.youtube.com/watch?v=1w7OgIMMRc4"
+                                      "title": "Sweet Child o' Mine",
+                                      "singer": "Guns N' Roses",
+                                      "genre": "Rock",
+                                      "duration": 5.56,
+                                      "link": "https://www.youtube.com/watch?v=1w7OgIMMRc4"
                                     }
                                     """)
                     )
@@ -190,7 +191,7 @@ public class MusicController {
                                             """))),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             })
-    public ResponseEntity<Music> createMusic(@RequestBody MusicDto musicDto) {
+    public ResponseEntity<Music> createMusic(@org.springframework.web.bind.annotation.RequestBody MusicDto musicDto) {
         try {
             Music music = musicService.createMusic(musicDto);
             return ResponseEntity.status(HttpStatus.CREATED).body(music);
@@ -203,7 +204,7 @@ public class MusicController {
         }
     }
 
-    @PatchMapping("/{id}")
+    @PutMapping("/{id}")
     @Operation(summary = "Atualiza uma música existente",
             requestBody = @RequestBody(
                     content = @Content(
@@ -211,11 +212,11 @@ public class MusicController {
                             schema = @Schema(implementation = MusicDto.class),
                             examples = @ExampleObject(value = """
                                     {
-                                      "Title": "Sweet Child o' Mine",
-                                      "Singer": "Guns N' Roses",
-                                      "Genre": "Rock",
-                                      "Duration": 5.50,
-                                      "Link": "https://www.youtube.com/watch?v=1w7OgIMMRc4"
+                                      "title": "Sweet Child o' Mine",
+                                      "singer": "Guns N' Roses",
+                                      "genre": "Rock",
+                                      "duration": 5.50,
+                                      "link": "https://www.youtube.com/watch?v=1w7OgIMMRc4"
                                     }
                                     """)
                     )
@@ -238,7 +239,7 @@ public class MusicController {
                     @ApiResponse(responseCode = "404", description = "Música não encontrada"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             })
-    public ResponseEntity<Music> updateMusic(@PathVariable Long id, @RequestBody MusicDto musicDto) {
+    public ResponseEntity<Music> updateMusic(@PathVariable Long id, @org.springframework.web.bind.annotation.RequestBody MusicDto musicDto) {
         try {
             Music music = musicService.updateMusic(id, musicDto);
             if (music == null) {
@@ -253,6 +254,40 @@ public class MusicController {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Foi gerada uma exceção", e);
         }
     }
+
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Atualiza parcialmente uma música existente",
+            requestBody = @RequestBody(
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(value = """
+                                {
+                                  "title": "Sweet Child o' Mine (Acoustic Version)",
+                                  "genre": "Acoustic"
+                                }
+                                """)
+                    )
+            ),
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Música atualizada parcialmente com sucesso"),
+                    @ApiResponse(responseCode = "404", description = "Música não encontrada"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            })
+    public ResponseEntity<Music> patchMusic(@PathVariable Long id, @org.springframework.web.bind.annotation.RequestBody Map<String, Object> updates) {
+        try {
+            Music music = musicService.patchMusic(id, updates);
+            if (music == null) {
+                return ResponseEntity.notFound().build();
+            }
+            return ResponseEntity.ok(music);
+        } catch (DataAccessException | PersistenceException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Erro na atualização parcial da música", e);
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Foi gerada uma exceção", e);
+        }
+    }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Exclui uma música existente",

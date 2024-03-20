@@ -6,7 +6,10 @@ import com.sd3.lab3.repositories.MusicRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class MusicService {
@@ -37,28 +40,42 @@ public class MusicService {
 
 
     public Music createMusic(MusicDto musicDto) {
-        Music music = new Music();
-        music.setTitle(musicDto.getTitle());
-        music.setSinger(musicDto.getSinger());
-        music.setGenre(musicDto.getGenre());
-        music.setDuration(musicDto.getDuration());
-        music.setLink(musicDto.getLink());
+        Music music = new Music(musicDto.title, musicDto.singer, musicDto.genre, musicDto.duration, musicDto.link );
         return musicRepository.save(music);
     }
-
 
     public Music updateMusic(Long id, MusicDto musicDto) {
-        Music music = musicRepository.findById(id).orElse(null);
-        if (music == null) {
-            return null;
+        Music existingMusic = musicRepository.findById(id).orElse(null);
+        System.out.println(musicDto.toString());
+        if (existingMusic != null) {
+            existingMusic.setTitle(musicDto.getTitle());
+            existingMusic.setSinger(musicDto.getSinger());
+            existingMusic.setGenre(musicDto.getGenre());
+            existingMusic.setDuration(musicDto.getDuration());
+            existingMusic.setLink(musicDto.getLink());
+            existingMusic.setUpdatedAt(new Date());
+            return musicRepository.save(existingMusic);
         }
-        music.setTitle(musicDto.getTitle());
-        music.setSinger(musicDto.getSinger());
-        music.setGenre(musicDto.getGenre());
-        music.setDuration(musicDto.getDuration());
-        music.setLink(musicDto.getLink());
+        return null;
+    }
+
+    public Music patchMusic(Long id, Map<String, Object> updates) {
+        Music music = musicRepository.findById(id).orElse(null);
+        assert music != null;
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "title" -> music.setTitle((String) value);
+                case "singer" -> music.setSinger((String) value);
+                case "genre" -> music.setGenre((String) value);
+                case "duration" -> music.setDuration((double) value);
+                case "link" -> music.setLink((String) value);
+            }
+        });
+        music.setUpdatedAt(new Date());
         return musicRepository.save(music);
     }
+
 
     public boolean deleteMusic(Long id) {
         Music music = musicRepository.findById(id).orElse(null);

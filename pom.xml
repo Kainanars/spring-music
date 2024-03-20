@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sd3</groupId>
-	<artifactId>MusicPlayer</artifactId>
+	<artifactId>music-player</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
-	<name>MusicPlayer</name>
+	<name>music-player</name>
 	<description>API REST para Gestão de Streaming de música utilizando Java, Spring Boot, Spring Data JPA e Banco de dados Relacional.</description>
 	<properties>
 		<java.version>17</java.version>
